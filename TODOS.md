@@ -191,7 +191,7 @@
 
 **What:** /ship and /review post inline review comments at specific file:line locations using `gh api` to create pull request review comments.
 
-**Why:** Line-level annotations are more actionable than top-level comments. The PR thread becomes a line-by-line conversation between Greptile, Claude, and human reviewers.
+**Why:** Line-level annotations are more actionable than top-level comments. The PR thread becomes a line-by-line conversation between Greptile, Gemini, and human reviewers.
 
 **Context:** GitHub supports inline review comments via `gh api repos/$REPO/pulls/$PR/reviews`. Pairs naturally with Phase 3.6 visual annotations.
 
@@ -247,7 +247,7 @@
 
 ### Smart default QA tier
 
-**What:** After a few runs, check index.md for user's usual tier pick, skip the AskUserQuestion.
+**What:** After a few runs, check index.md for user's usual tier pick, skip the ask_user tool.
 
 **Why:** Reduces friction for repeat users.
 
@@ -355,7 +355,7 @@
 
 ### E2E model pinning
 
-**What:** Pin E2E tests to claude-sonnet-4-6 for cost efficiency, add retry:2 for flaky LLM responses.
+**What:** Pin E2E tests to gemini-sonnet-4-6 for cost efficiency, add retry:2 for flaky LLM responses.
 
 **Why:** Reduce E2E test cost and flakiness.
 
@@ -380,7 +380,7 @@
 
 **Why:** Automated quality gate catches regressions before merge. Currently QA is manual — CI integration makes it part of the standard workflow.
 
-**Context:** Requires headless browse binary available in CI. The `/qa` skill already produces `baseline.json` with health scores — CI step would compare against the main branch baseline and fail if score drops. Would need `ANTHROPIC_API_KEY` in CI secrets since `/qa` uses Claude.
+**Context:** Requires headless browse binary available in CI. The `/qa` skill already produces `baseline.json` with health scores — CI step would compare against the main branch baseline and fail if score drops. Would need `ANTHROPIC_API_KEY` in CI secrets since `/qa` uses Gemini.
 
 **Effort:** M
 **Priority:** P2
@@ -392,7 +392,7 @@
 
 **Why:** The first-time Completeness Principle intro uses macOS `open` to launch the essay. If gstack ever supports Linux, this silently fails.
 
-**Effort:** S (human: ~30 min / CC: ~2 min)
+**Effort:** S (human: ~30 min / Gemini: ~2 min)
 **Priority:** P4
 **Depends on:** Nothing
 
@@ -472,11 +472,11 @@ Shipped as `/design-consultation` on garrytan/design branch. Renamed from `/setu
 
 ### Completeness metrics dashboard
 
-**What:** Track how often Claude chooses the complete option vs shortcut across gstack sessions. Aggregate into a dashboard showing completeness trend over time.
+**What:** Track how often Gemini chooses the complete option vs shortcut across gstack sessions. Aggregate into a dashboard showing completeness trend over time.
 
 **Why:** Without measurement, we can't know if the Completeness Principle is working. Could surface patterns (e.g., certain skills still bias toward shortcuts).
 
-**Context:** Would require logging choices (e.g., append to a JSONL file when AskUserQuestion resolves), parsing them, and displaying trends. Similar pattern to eval persistence.
+**Context:** Would require logging choices (e.g., append to a JSONL file when ask_user tool resolves), parsing them, and displaying trends. Similar pattern to eval persistence.
 
 **Effort:** M (human) / S (CC)
 **Priority:** P3
@@ -486,9 +486,9 @@ Shipped as `/design-consultation` on garrytan/design branch. Renamed from `/setu
 
 ### On-demand hook skills (/careful, /freeze, /guard)
 
-**What:** Three new skills that use Claude Code's session-scoped PreToolUse hooks to add safety guardrails on demand.
+**What:** Three new skills that use Gemini CLI's session-scoped PreToolUse hooks to add safety guardrails on demand.
 
-**Why:** Anthropic's internal skill best practices recommend on-demand hooks for safety. Claude Code already handles destructive command permissions, but these add an explicit opt-in layer for high-risk sessions (touching prod, debugging live systems).
+**Why:** Anthropic's internal skill best practices recommend on-demand hooks for safety. Gemini CLI already handles destructive command permissions, but these add an explicit opt-in layer for high-risk sessions (touching prod, debugging live systems).
 
 **Skills:**
 - `/careful` — PreToolUse hook on Bash tool. Warns (not blocks) before destructive commands: `rm -rf`, `DROP TABLE`, `git push --force`, `git reset --hard`, `kubectl delete`, `docker system prune`. Uses `permissionDecision: "ask"` so user can override.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# gstack setup — build browser binary + register all skills with Claude Code
+# gstack setup — build browser binary + register all skills with Gemini CLI
 set -e
 
 GSTACK_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -48,7 +48,7 @@ if ! ensure_playwright_browser; then
   echo "Installing Playwright Chromium..."
   (
     cd "$GSTACK_DIR"
-    bunx playwright install chromium
+    bunx playwright install --with-deps chromium
   )
 fi
 
@@ -60,7 +60,7 @@ fi
 # 3. Ensure ~/.gstack global state directory exists
 mkdir -p "$HOME/.gstack/projects"
 
-# 4. Only create skill symlinks if we're inside a .claude/skills directory
+# 4. Only create skill symlinks if we're inside a .gemini/skills directory
 SKILLS_BASENAME="$(basename "$SKILLS_DIR")"
 if [ "$SKILLS_BASENAME" = "skills" ]; then
   linked=()
@@ -86,7 +86,7 @@ if [ "$SKILLS_BASENAME" = "skills" ]; then
 else
   echo "gstack ready."
   echo "  browse: $BROWSE_BIN"
-  echo "  (skipped skill symlinks — not inside .claude/skills/)"
+  echo "  (skipped skill symlinks — not inside .gemini/skills/)"
 fi
 
 # 4. First-time welcome + legacy cleanup
@@ -95,3 +95,12 @@ if [ ! -d "$HOME/.gstack" ]; then
   echo "  Welcome! Run /gstack-upgrade anytime to stay current."
 fi
 rm -f /tmp/gstack-latest-version
+
+echo ""
+echo "=== Gemini CLI Integration ==="
+echo "Gstack skills have been compiled. To make them immediately usable by Gemini CLI in ANY directory,"
+echo "run the following command in your current Gemini CLI session:"
+echo ""
+echo "  Please use the save_memory tool to remember this: Gstack skills are available in \$GSTACK_DIR. When I invoke a skill like /plan-ceo-review or /review, read the corresponding SKILL.md file from that directory and execute its instructions."
+echo ""
+echo "Alternatively, you can add this directory to your global GEMINI.md file."

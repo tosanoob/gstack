@@ -209,7 +209,7 @@ describeIfSelected('LLM-as-judge quality evals', [
 
     const client = new Anthropic();
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'gemini-sonnet-4-6',
       max_tokens: 1024,
       messages: [{
         role: 'user',
@@ -583,7 +583,7 @@ describeIfSelected('Plan Review skill evals', [
       startMarker: '## BEFORE YOU START:',
       endMarker: '## CRITICAL RULE',
       judgeContext: 'an engineering plan review framework with 4 review sections',
-      judgeGoal: 'how to review a plan for architecture quality, code quality, test coverage, and performance — walking through each section interactively with AskUserQuestion',
+      judgeGoal: 'how to review a plan for architecture quality, code quality, test coverage, and performance — walking through each section interactively with ask_user tool',
     });
   }, 30_000);
 

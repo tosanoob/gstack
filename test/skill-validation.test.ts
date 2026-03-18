@@ -538,7 +538,7 @@ describe('v0.4.1 preamble features', () => {
     test(`${skill} contains RECOMMENDATION format`, () => {
       const content = fs.readFileSync(path.join(ROOT, skill), 'utf-8');
       expect(content).toContain('RECOMMENDATION: Choose');
-      expect(content).toContain('AskUserQuestion');
+      expect(content).toContain('ask_user tool');
     });
 
     test(`${skill} contains session awareness`, () => {
@@ -663,7 +663,7 @@ describe('Completeness Principle in generated SKILL.md files', () => {
 
   test('Completeness Principle includes compression table', () => {
     const content = fs.readFileSync(path.join(ROOT, 'SKILL.md'), 'utf-8');
-    expect(content).toContain('CC+gstack');
+    expect(content).toContain('Gemini+gstack');
     expect(content).toContain('Compression');
   });
 

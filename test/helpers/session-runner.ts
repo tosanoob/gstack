@@ -1,8 +1,8 @@
 /**
- * Claude CLI subprocess runner for skill E2E testing.
+ * Gemini CLI subprocess runner for skill E2E testing.
  *
- * Spawns `claude -p` as a completely independent process (not via Agent SDK),
- * so it works inside Claude Code sessions. Pipes prompt via stdin, streams
+ * Spawns `gemini -p` as a completely independent process (not via Agent SDK),
+ * so it works inside Gemini CLI sessions. Pipes prompt via stdin, streams
  * NDJSON output for real-time progress, scans for browse errors.
  */
 
@@ -140,7 +140,7 @@ export async function runSkillTest(options: {
     } catch { /* non-fatal */ }
   }
 
-  // Spawn claude -p with streaming NDJSON output. Prompt piped via stdin to
+  // Spawn gemini -p with streaming NDJSON output. Prompt piped via stdin to
   // avoid shell escaping issues. --verbose is required for stream-json mode.
   const args = [
     '-p',
@@ -155,7 +155,7 @@ export async function runSkillTest(options: {
   const promptFile = path.join(workingDirectory, '.prompt-tmp');
   fs.writeFileSync(promptFile, prompt);
 
-  const proc = Bun.spawn(['sh', '-c', `cat "${promptFile}" | claude ${args.map(a => `"${a}"`).join(' ')}`], {
+  const proc = Bun.spawn(['sh', '-c', `cat "${promptFile}" | gemini ${args.map(a => `"${a}"`).join(' ')}`], {
     cwd: workingDirectory,
     stdout: 'pipe',
     stderr: 'pipe',
@@ -279,7 +279,7 @@ export async function runSkillTest(options: {
   // Use resultLine for structured result data
   if (resultLine) {
     if (resultLine.is_error) {
-      // claude -p can return subtype=success with is_error=true (e.g. API connection failure)
+      // gemini -p can return subtype=success with is_error=true (e.g. API connection failure)
       exitReason = 'error_api';
     } else if (resultLine.subtype === 'success') {
       exitReason = 'success';

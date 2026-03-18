@@ -50,7 +50,7 @@ gstack/
 │   ├── skill-validation.test.ts  # Tier 1: static validation (free, <1s)
 │   ├── gen-skill-docs.test.ts    # Tier 1: generator quality (free, <1s)
 │   ├── skill-llm-eval.test.ts   # Tier 3: LLM-as-judge (~$0.15/run)
-│   └── skill-e2e.test.ts         # Tier 2: E2E via claude -p (~$3.85/run)
+│   └── skill-e2e.test.ts         # Tier 2: E2E via gemini -p (~$3.85/run)
 ├── qa-only/         # /qa-only skill (report-only QA, no fixes)
 ├── plan-design-review/  # /plan-design-review skill (report-only design audit)
 ├── design-review/    # /design-review skill (design audit + fix loop)
@@ -79,12 +79,12 @@ To add a snapshot flag: add it to `SNAPSHOT_FLAGS` in `browse/src/snapshot.ts` a
 
 ## Writing SKILL templates
 
-SKILL.md.tmpl files are **prompt templates read by Claude**, not bash scripts.
+SKILL.md.tmpl files are **prompt templates read by Gemini**, not bash scripts.
 Each bash code block runs in a separate shell — variables do not persist between blocks.
 
 Rules:
 - **Use natural language for logic and state.** Don't use shell variables to pass
-  state between code blocks. Instead, tell Claude what to remember and reference
+  state between code blocks. Instead, tell Gemini what to remember and reference
   it in prose (e.g., "the base branch detected in Step 0").
 - **Don't hardcode branch names.** Detect `main`/`master`/etc dynamically via
   `gh pr view` or `gh repo view`. Use `{{BASE_BRANCH_DETECT}}` for PR-targeting
@@ -98,22 +98,22 @@ Rules:
 
 When you need to interact with a browser (QA, dogfooding, cookie setup), use the
 `/browse` skill or run the browse binary directly via `$B <command>`. NEVER use
-`mcp__claude-in-chrome__*` tools — they are slow, unreliable, and not what this
+`mcp__gemini-in-chrome__*` tools — they are slow, unreliable, and not what this
 project uses.
 
 ## Vendored symlink awareness
 
-When developing gstack, `.claude/skills/gstack` may be a symlink back to this
+When developing gstack, `.gemini/skills/gstack` may be a symlink back to this
 working directory (gitignored). This means skill changes are **live immediately** —
 great for rapid iteration, risky during big refactors where half-written skills
-could break other Claude Code sessions using gstack concurrently.
+could break other Gemini CLI sessions using gstack concurrently.
 
-**Check once per session:** Run `ls -la .claude/skills/gstack` to see if it's a
+**Check once per session:** Run `ls -la .gemini/skills/gstack` to see if it's a
 symlink or a real copy. If it's a symlink to your working directory, be aware that:
 - Template changes + `bun run gen:skill-docs` immediately affect all gstack invocations
 - Breaking changes to SKILL.md.tmpl files can break concurrent gstack sessions
-- During large refactors, remove the symlink (`rm .claude/skills/gstack`) so the
-  global install at `~/.claude/skills/gstack/` is used instead
+- During large refactors, remove the symlink (`rm .gemini/skills/gstack`) so the
+  global install at `~/.gemini/skills/gstack/` is used instead
 
 **For plan reviews:** When reviewing plans that modify skill templates or the
 gen-skill-docs pipeline, consider whether the changes should be tested in isolation
@@ -146,13 +146,13 @@ CHANGELOG.md is **for users**, not contributors. Write it like product release n
 - Put contributor/internal changes in a separate "For contributors" section at the bottom.
 - Every entry should make someone think "oh nice, I want to try that."
 - No jargon: say "every question now tells you which project and branch you're in" not
-  "AskUserQuestion format standardized across skill templates via preamble resolver."
+  "ask_user tool format standardized across skill templates via preamble resolver."
 
 ## AI effort compression
 
-When estimating or discussing effort, always show both human-team and CC+gstack time:
+When estimating or discussing effort, always show both human-team and Gemini+gstack time:
 
-| Task type | Human team | CC+gstack | Compression |
+| Task type | Human team | Gemini+gstack | Compression |
 |-----------|-----------|-----------|-------------|
 | Boilerplate / scaffolding | 2 days | 15 min | ~100x |
 | Test writing | 1 day | 15 min | ~50x |
@@ -188,10 +188,10 @@ regenerated SKILL.md shifts prompt context.
 
 ## Deploying to the active skill
 
-The active skill lives at `~/.claude/skills/gstack/`. After making changes:
+The active skill lives at `~/.gemini/skills/gstack/`. After making changes:
 
 1. Push your branch
-2. Fetch and reset in the skill directory: `cd ~/.claude/skills/gstack && git fetch origin && git reset --hard origin/main`
-3. Rebuild: `cd ~/.claude/skills/gstack && bun run build`
+2. Fetch and reset in the skill directory: `cd ~/.gemini/skills/gstack && git fetch origin && git reset --hard origin/main`
+3. Rebuild: `cd ~/.gemini/skills/gstack && bun run build`
 
-Or copy the binary directly: `cp browse/dist/browse ~/.claude/skills/gstack/browse/dist/browse`
+Or copy the binary directly: `cp browse/dist/browse ~/.gemini/skills/gstack/browse/dist/browse`

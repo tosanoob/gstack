@@ -30,6 +30,15 @@ gstack gives you access to a team of specialist personas:
 *   **`/qa`**: Systematic, visual QA using a headless browser. Finds bugs, writes regression tests, and fixes them in source code.
 *   **`/ship`**: Prepares your PR, audits your diff, updates documentation, and lands the code.
 *   **`/browse`**: A fast, headless Playwright browser that allows Gemini to "see" and interact with your site.
+## 10-15 parallel sprints
+
+gstack is powerful with one sprint. It is transformative with ten running at once.
+
+[Conductor](https://conductor.build) runs multiple Claude Code sessions in parallel — each in its own isolated workspace. One session running `/office-hours` on a new idea, another doing `/review` on a PR, a third implementing a feature, a fourth running `/qa` on staging, and six more on other branches. All at the same time. I regularly run 10-15 parallel sprints — that's the practical max right now.
+
+The sprint structure is what makes parallelism work. Without a process, ten agents is ten sources of chaos. With a process — think, plan, build, review, test, ship — each agent knows exactly what to do and when to stop. You manage them the way a CEO manages a team: check in on the decisions that matter, let the rest run.
+
+---
 
 ---
 
